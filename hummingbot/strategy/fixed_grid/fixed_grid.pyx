@@ -548,7 +548,7 @@ cdef class FixedGridStrategy(StrategyBase):
         for i in range(self._current_level):
             price = self._price_levels[i]
             price = market.c_quantize_order_price(self.trading_pair, price)
-            size = self._order_amount
+            size =  self._order_amount / price
             size = market.c_quantize_order_amount(self.trading_pair, size)
             if size > 0:
                 buys.append(PriceSize(price, size))
@@ -556,7 +556,7 @@ cdef class FixedGridStrategy(StrategyBase):
         for i in range(self._current_level+1,self._n_levels):
             price = self._price_levels[i]
             price = market.c_quantize_order_price(self.trading_pair, price)
-            size = self._order_amount
+            size = self._order_amount / price
             size = market.c_quantize_order_amount(self.trading_pair, size)
             if size > 0:
                 sells.append(PriceSize(price, size))
