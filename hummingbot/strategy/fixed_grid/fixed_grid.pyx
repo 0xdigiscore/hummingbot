@@ -493,33 +493,7 @@ cdef class FixedGridStrategy(StrategyBase):
                 # self.logger().info(f"Quote balance required {self._quote_inv_levels[self._current_level]}")
                 # self.logger().info(f"Price at current level {self._price_levels[self._current_level]}")
                 # self.logger().info(f"Quote balance required in Base {self._quote_inv_levels_current_price[self._current_level]}")
-                if base_balance < self._base_inv_levels[self._current_level]:
-                    self._inv_correct = False
-                    self.logger().warning(f"WARNING: Insuffient {base_asset} balance for grid bot. Will attempt to rebalance")
-                    if base_balance + quote_balance < self._base_inv_levels[self._current_level] + self._quote_inv_levels_current_price[self._current_level]:
-                        self.logger().warning(f"WARNING: Insuffient {base_asset} and {quote_asset} balance for grid bot. Unable to rebalance."
-                                            f"Please add funds or change grid parameters")
-                        return
-                    else:
-                        # Calculate additional base required with 5% tolerance 
-                        base_required = (Decimal(self._base_inv_levels[self._current_level]) - Decimal(base_balance))*Decimal(1.05)
-                        self._start_order_buy = True
-                        self._start_order_amount = Decimal(base_required)                  
-                elif quote_balance < self._quote_inv_levels_current_price[self._current_level]:
-                    self._inv_correct = False
-                    self.logger().warning(f"WARNING: Insuffient {quote_asset} balance for grid bot. Will attempt to rebalance")
-                    if base_balance + quote_balance < self._base_inv_levels[self._current_level] + self._quote_inv_levels_current_price[self._current_level]:
-                        self.logger().warning(f"WARNING: Insuffient {base_asset} and {quote_asset} balance for grid bot. Unable to rebalance."
-                                            f"Please add funds or change grid parameters")
-                        return
-                    else:
-                        # Calculate additional quote required with 5% tolerance 
-                        quote_required = (Decimal(self._quote_inv_levels_current_price[self._current_level]) - Decimal(quote_balance))*Decimal(1.05)
-                        self._start_order_buy = False
-                        self._start_order_amount = Decimal(quote_required)
-                else:
-                    self._inv_correct = True
-
+        
                 if self._inv_correct is True:
                     # Create proposals for Grid
                     proposal = self.c_create_grid_proposal()
